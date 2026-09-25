@@ -78,7 +78,7 @@ DEMO_GRADES = [
 
 DEMO_NEWS = [
     {"date": "25 сентября", "title": "Открыта запись в студенческие клубы", "text": "Робототехника, киберспорт, дебаты и ещё 20 направлений."},
-    {"date": "22 сентября", "title": "Хакатон МТИ пройдёт в октябре", "text": "Команды до 4 человек, призовой фонд — 300 000 ₽."},
+    {"date": "22 сентября", "title": "Хакатон МТИ пройдёт в октябре", "text": "Команды до 4 человек, призовой фонд 300 000 ₽."},
     {"date": "18 сентября", "title": "Новая коворкинг-зона в корпусе Б", "text": "Работает ежедневно с 8:00 до 21:00."},
 ]
 
@@ -157,7 +157,7 @@ def save_profile_photo(file_storage, user):
     if not data:
         raise ValueError("Файл фотографии пустой.")
     if len(data) > MAX_UPLOAD_SIZE:
-        raise ValueError("Файл слишком большой. Максимальный размер — 5 МБ.")
+        raise ValueError("Файл слишком большой. Максимальный размер: 5 МБ.")
 
     user.photo_data = data
     user.photo_mimetype = mimetype
@@ -220,8 +220,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         session["user_id"] = user.id
-        flash("Аккаунт создан. Профиль заполнен примерными данными — изменить их можно в настройках.", "success")
-        return redirect(url_for("profile"))
+        flash("Аккаунт создан. Проверьте и заполните данные профиля.", "success")
+        return redirect(url_for("edit_profile"))
 
     return render_template("register.html")
 
@@ -310,7 +310,7 @@ def profile_photo():
 
 @app.errorhandler(413)
 def file_too_large(_):
-    flash("Файл слишком большой. Максимальный размер — 5 МБ.", "danger")
+    flash("Файл слишком большой. Максимальный размер: 5 МБ.", "danger")
     return redirect(request.referrer or url_for("edit_profile"))
 
 

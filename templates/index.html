@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}МТИ — личный кабинет студента{% endblock %}
+{% block title %}МТИ · личный кабинет студента{% endblock %}
 {% block content %}
 {% if current_user %}
 {% set user = current_user %}
@@ -40,7 +40,7 @@
             </div>
           </article>
         {% else %}
-          <div class="card empty-state">Пар нет — можно отдохнуть 🎉</div>
+          <div class="card empty-state">Пар нет, можно отдохнуть 🎉</div>
         {% endfor %}
       </div>
     {% endfor %}
@@ -86,7 +86,7 @@
 <section class="hero">
   <div class="hero-copy">
     <span class="eyebrow">Московский технологический институт</span>
-    <h1>Личный кабинет студента МТИ.</h1>
+    <h1>Личный кабинет студента МТИ</h1>
     <p>Зарегистрируйтесь, заполните анкету студента и загрузите фотографию. Все данные сохраняются и будут доступны при следующем входе.</p>
     <div class="hero-actions">
         <a class="button primary" href="{{ url_for('register') }}">Создать аккаунт</a>
@@ -104,7 +104,7 @@
 </section>
 
 <section class="features">
-  <article class="feature-card"><strong>Регистрация</strong><span>Вход по email и паролю — пароль хранится в зашифрованном виде.</span></article>
+  <article class="feature-card"><strong>Регистрация</strong><span>Вход по email и паролю, пароль хранится в зашифрованном виде.</span></article>
   <article class="feature-card"><strong>Анкета студента</strong><span>Имя, город, телефон, дата рождения и информация о себе.</span></article>
   <article class="feature-card"><strong>Фотография</strong><span>Загрузка JPG, PNG или WebP до 5 МБ.</span></article>
 </section>
