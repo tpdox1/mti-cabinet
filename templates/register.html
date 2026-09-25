@@ -6,10 +6,20 @@
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <span class="eyebrow">Студент МТИ</span>
     <h1>Регистрация</h1>
-    <label>Email<input type="email" name="email" required autocomplete="email" placeholder="name@example.com"></label>
-    <label>Пароль<input type="password" name="password" required minlength="6" autocomplete="new-password" placeholder="Минимум 6 символов"></label>
-    <label>Повторите пароль<input type="password" name="password_repeat" required minlength="6" autocomplete="new-password"></label>
-    <button class="button primary full" type="submit">Создать аккаунт</button>
+    <label>Email
+      <input id="regEmail" type="email" name="email" value="{{ email }}" required autocomplete="email" placeholder="name@example.com"
+             class="{{ 'invalid' if errors.email }}" data-check-url="{{ url_for('check_email') }}">
+      <span class="field-error" id="emailError" {% if not errors.email %}hidden{% endif %}>{{ errors.email }}</span>
+    </label>
+    <label>Пароль
+      <input type="password" name="password" required minlength="6" autocomplete="new-password" placeholder="Минимум 6 символов" class="{{ 'invalid' if errors.password }}">
+      {% if errors.password %}<span class="field-error">{{ errors.password }}</span>{% endif %}
+    </label>
+    <label>Повторите пароль
+      <input type="password" name="password_repeat" required minlength="6" autocomplete="new-password" class="{{ 'invalid' if errors.password_repeat }}">
+      {% if errors.password_repeat %}<span class="field-error">{{ errors.password_repeat }}</span>{% endif %}
+    </label>
+    <button id="regSubmit" class="button primary full" type="submit">Создать аккаунт</button>
     <p class="muted center">Уже зарегистрированы? <a href="{{ url_for('login') }}">Войти</a></p>
   </form>
 </section>

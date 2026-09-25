@@ -43,3 +43,39 @@ days.forEach((day) => {
     });
   });
 });
+
+// Проверка email при регистрации
+const regEmail = document.querySelector('#regEmail');
+if (regEmail) {
+  const emailError = document.querySelector('#emailError');
+  const submit = document.querySelector('#regSubmit');
+  let timer;
+
+  const showError = (text) => {
+    emailError.textContent = text;
+    emailError.hidden = !text;
+    regEmail.classList.toggle('invalid', Boolean(text));
+    submit.disabled = Boolean(text);
+  };
+
+  const check = async () => {
+    const email = regEmail.value.trim();
+    if (!email || !regEmail.checkValidity()) return showError('');
+    try {
+      const res = await fetch(`${regEmail.dataset.checkUrl}?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      if (regEmail.value.trim() === email) {
+        showError(data.taken ? 'Пользователь с таким email уже существует.' : '');
+      }
+    } catch {
+      showError('');
+    }
+  };
+
+  regEmail.addEventListener('input', () => {
+    clearTimeout(timer);
+    showError('');
+    timer = setTimeout(check, 400);
+  });
+  regEmail.addEventListener('blur', check);
+}

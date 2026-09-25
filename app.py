@@ -5,9 +5,10 @@ from pathlib import Path
 from io import BytesIO
 from functools import wraps
 
-from flask import Flask, flash, redirect, render_template, request, session, url_for, send_file
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect, text
+from sqlalchemy.exc import IntegrityError
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
@@ -193,6 +194,16 @@ def index():
     )
 
 
+def email_taken(email: str) -> bool:
+    return User.query.filter_by(email=email).first() is not None
+
+
+@app.route("/register/check-email")
+def check_email():
+    email = request.args.get("email", "").strip().lower()
+    return jsonify(taken=bool(email) and email_taken(email))
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user():
@@ -203,27 +214,33 @@ def register():
         password = request.form.get("password", "")
         password_repeat = request.form.get("password_repeat", "")
 
+        errors = {}
         if not email or "@" not in email:
-            flash("Введите корректный email.", "danger")
-            return render_template("register.html")
+            errors["email"] = "Введите корректный email."
+        elif email_taken(email):
+            errors["email"] = "Пользователь с таким email уже существует."
         if len(password) < 6:
-            flash("Пароль должен содержать минимум 6 символов.", "danger")
-            return render_template("register.html")
-        if password != password_repeat:
-            flash("Пароли не совпадают.", "danger")
-            return render_template("register.html")
-        if User.query.filter_by(email=email).first():
-            flash("Пользователь с таким email уже существует.", "danger")
-            return render_template("register.html")
+            errors["password"] = "Пароль должен содержать минимум 6 символов."
+        elif password != password_repeat:
+            errors["password_repeat"] = "Пароли не совпадают."
+        if errors:
+            return render_template("register.html", email=email, errors=errors)
 
         user = User(email=email, password_hash=generate_password_hash(password), **DEFAULT_PROFILE)
         db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            # на случай, если два запроса с одним email пришли одновременно
+            db.session.rollback()
+            errors["email"] = "Пользователь с таким email уже существует."
+            return render_template("register.html", email=email, errors=errors)
+
         session["user_id"] = user.id
         flash("Аккаунт создан. Проверьте и заполните данные профиля.", "success")
         return redirect(url_for("edit_profile"))
 
-    return render_template("register.html")
+    return render_template("register.html", email="", errors={})
 
 
 @app.route("/login", methods=["GET", "POST"])

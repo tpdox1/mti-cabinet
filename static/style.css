@@ -53,6 +53,9 @@ label { display: flex; flex-direction: column; gap: 8px; font-size: 13px; font-w
 input, textarea, select { width: 100%; border: 1px solid var(--line); background: #fbfcfe; border-radius: 12px; padding: 13px 14px; font: inherit; font-size: 14px; outline: none; color: var(--text); }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(109,134,227,.12); }
 input:disabled { color: var(--muted); }
+input.invalid { border-color: var(--danger); background: var(--danger-bg); }
+.field-error { color: var(--danger); font-size: 13px; font-weight: 500; }
+.button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .muted { color: var(--muted); }
 .small { font-size: 12px; }
 .center { text-align: center; font-size: 13px; margin: 18px 0 0; }
