@@ -69,15 +69,16 @@ DEMO_MESSAGES = [
     {"from": "Библиотека МТИ", "role": "Сервис", "text": "Срок возврата книги «Алгоритмы» истекает через 3 дня.", "time": "Пн", "unread": False},
 ]
 
+# kind: "Экзамен" (оценка 2–5) или "Зачёт" (passed: True — «Зачёт», False — «Незачёт»)
 DEMO_GRADES = [
-    {"subject": "Философия", "grade": 5, "note": "Доклад о Канте"},
-    {"subject": "История России", "grade": 4, "note": "Тест по разделу 1"},
-    {"subject": "Английский язык", "grade": 5, "note": "Эссе"},
-    {"subject": "Экономика", "grade": 4, "note": "Контрольная работа"},
-    {"subject": "Русский язык и культура речи", "grade": 5, "note": "Диктант"},
-    {"subject": "Социология", "grade": 3, "note": "Семинар"},
-    {"subject": "Правоведение", "grade": 4, "note": "Опрос"},
-    {"subject": "Физическая культура", "grade": 5, "note": "Зачётный норматив"},
+    {"subject": "Философия", "kind": "Экзамен", "grade": 5},
+    {"subject": "История России", "kind": "Экзамен", "grade": 4},
+    {"subject": "Экономика", "kind": "Экзамен", "grade": 4},
+    {"subject": "Английский язык", "kind": "Экзамен", "grade": 5},
+    {"subject": "Русский язык и культура речи", "kind": "Зачёт", "passed": True},
+    {"subject": "Социология", "kind": "Зачёт", "passed": True},
+    {"subject": "Правоведение", "kind": "Зачёт", "passed": True},
+    {"subject": "Физическая культура", "kind": "Зачёт", "passed": True},
 ]
 
 DEMO_NEWS = [
@@ -184,7 +185,7 @@ def index():
         return render_template("index.html")
 
     today = WEEKDAYS[date.today().weekday()]
-    grades = [g["grade"] for g in DEMO_GRADES]
+    grades = [g["grade"] for g in DEMO_GRADES if g["kind"] == "Экзамен"]
     return render_template(
         "index.html",
         schedule=DEMO_SCHEDULE,

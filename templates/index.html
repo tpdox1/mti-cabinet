@@ -65,8 +65,12 @@
     <div class="card list-card">
       {% for g in grades %}
         <article class="grade-row">
-          <div><strong>{{ g.subject }}</strong><span class="muted small">{{ g.note }}</span></div>
-          <span class="grade grade-{{ g.grade }}">{{ g.grade }}</span>
+          <div><strong>{{ g.subject }}</strong><span class="muted small">{{ g.kind }}</span></div>
+          {% if g.kind == "Зачёт" %}
+            <span class="grade grade-credit {{ 'grade-fail' if not g.passed }}">{{ 'Зачёт' if g.passed else 'Незачёт' }}</span>
+          {% else %}
+            <span class="grade grade-{{ g.grade }}">{{ g.grade }}</span>
+          {% endif %}
         </article>
       {% endfor %}
     </div>
