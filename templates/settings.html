@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Настройки — МТИ{% endblock %}
+{% block content %}
+<section class="narrow">
+  <span class="eyebrow">Личный кабинет</span>
+  <h1 class="page-title">Настройки</h1>
+
+  <div class="card settings-list">
+    <a class="settings-item" href="{{ url_for('edit_profile') }}">
+      <span>
+        <strong>Редактировать профиль</strong>
+        <small>Фото, личные данные, уровень образования, институт, курс</small>
+      </span>
+      <span class="chevron" aria-hidden="true">›</span>
+    </a>
+    <div class="settings-item static">
+      <span>
+        <strong>Аккаунт</strong>
+        <small>{{ user.email }}</small>
+      </span>
+    </div>
+  </div>
+
+  <form action="{{ url_for('logout') }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="button danger full" type="submit">Выйти из аккаунта</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Редактирование профиля — МТИ{% endblock %}
+{% block content %}
+<section class="narrow">
+  <a class="back-link" href="{{ url_for('settings') }}">‹ Настройки</a>
+  <h1 class="page-title">Редактирование профиля</h1>
+
+  <form class="card profile-form" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="photo-field">
+      <div class="photo-preview-box">
+        {% if user.photo_data %}
+          <img id="photoPreview" src="{{ url_for('profile_photo') }}" alt="Предпросмотр">
+        {% else %}
+          <div id="photoPlaceholder">Фото</div>
+          <img id="photoPreview" class="hidden" alt="Предпросмотр">
+        {% endif %}
+      </div>
+      <div>
+        <label class="file-label" for="photo">Загрузить фото</label>
+        <input id="photo" class="file-input" type="file" name="photo" accept="image/png,image/jpeg,image/webp">
+        <p class="muted small">JPG, PNG или WebP · до 5 МБ</p>
+      </div>
+    </div>
+
+    <h2 class="form-section">Учёба</h2>
+    <div class="form-grid">
+      <label>Уровень образования
+        <select name="degree">
+          {% for d in degrees %}
+            <option value="{{ d }}" {% if (user.degree or degrees[0]) == d %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Институт<input name="institute" value="{{ user.institute or '' }}" placeholder="Институт информационных технологий"></label>
+      <label>Направление<input name="direction" value="{{ user.direction or '' }}" placeholder="09.03.01 Информатика и вычислительная техника"></label>
+      <label>Специализация<input name="specialization" value="{{ user.specialization or '' }}" placeholder="Веб-разработка"></label>
+      <label>Курс
+        <select name="course">
+          <option value="">Не указан</option>
+          {% for c in courses %}
+            <option value="{{ c }}" {% if user.course == c %}selected{% endif %}>{{ c }} курс</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <h2 class="form-section">Личные данные</h2>
+    <div class="form-grid">
+      <label>Имя<input name="first_name" value="{{ user.first_name or '' }}" placeholder="Анна" autocomplete="given-name"></label>
+      <label>Фамилия<input name="last_name" value="{{ user.last_name or '' }}" placeholder="Иванова" autocomplete="family-name"></label>
+      <label>Город<input name="city" value="{{ user.city or '' }}" placeholder="Москва" autocomplete="address-level2"></label>
+      <label>Дата рождения<input type="date" name="birthday" value="{{ user.birthday or '' }}"></label>
+      <label>Телефон<input type="tel" name="phone" value="{{ user.phone or '' }}" placeholder="+7 999 000-00-00" autocomplete="tel"></label>
+      <label>Email<input value="{{ user.email }}" disabled></label>
+    </div>
+
+    <label>О себе<textarea name="about" rows="5" placeholder="Расскажите немного о себе">{{ user.about or '' }}</textarea></label>
+
+    <div class="form-actions">
+      <button class="button primary" type="submit">Сохранить</button>
+      <a class="button secondary" href="{{ url_for('profile') }}">Отмена</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

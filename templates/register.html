@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — МТИ{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <form class="card auth-card" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <span class="eyebrow">Студент МТИ</span>
+    <h1>Регистрация</h1>
+    <label>Email<input type="email" name="email" required autocomplete="email" placeholder="name@example.com"></label>
+    <label>Пароль<input type="password" name="password" required minlength="6" autocomplete="new-password" placeholder="Минимум 6 символов"></label>
+    <label>Повторите пароль<input type="password" name="password_repeat" required minlength="6" autocomplete="new-password"></label>
+    <button class="button primary full" type="submit">Создать аккаунт</button>
+    <p class="muted center">Уже зарегистрированы? <a href="{{ url_for('login') }}">Войти</a></p>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}МТИ — личный кабинет студента{% endblock %}
+{% block content %}
+{% if current_user %}
+{% set user = current_user %}
+<section class="dashboard">
+  <div class="dash-hello">
+    <span class="eyebrow">{{ user.degree or 'Студент' }}{% if user.course %} · {{ user.course }} курс{% endif %}</span>
+    <h1>Привет, {{ user.first_name or user.display_name }}!</h1>
+  </div>
+
+  <div class="dash-stats">
+    <div class="stat card"><strong>{{ schedule[today]|length }}</strong><span>пар сегодня</span></div>
+    <div class="stat card"><strong>{{ unread }}</strong><span>непрочитанных</span></div>
+    <div class="stat card"><strong>{{ average }}</strong><span>средний балл</span></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" role="tab" aria-selected="true" data-tab="schedule">Пары</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="messages">Сообщения{% if unread %}<span class="badge">{{ unread }}</span>{% endif %}</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="grades">Оценки</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="news">Новости</button>
+  </div>
+
+  <div class="tab-panel" data-panel="schedule">
+    <div class="day-picker">
+      {% for day in schedule %}
+        <button class="day {{ 'active' if day == today }}" data-day="{{ day }}">{{ day }}</button>
+      {% endfor %}
+    </div>
+    {% for day, lessons in schedule.items() %}
+      <div class="day-list" data-day-list="{{ day }}" {% if day != today %}hidden{% endif %}>
+        {% for l in lessons %}
+          <article class="card lesson">
+            <div class="lesson-time">{{ l.time }}</div>
+            <div class="lesson-body">
+              <strong>{{ l.title }}</strong>
+              <span class="muted">{{ l.kind }} · {{ l.room }}</span>
+              <span class="muted">{{ l.teacher }}</span>
+            </div>
+          </article>
+        {% else %}
+          <div class="card empty-state">Пар нет — можно отдохнуть 🎉</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="tab-panel" data-panel="messages" hidden>
+    <div class="card list-card">
+      {% for m in messages %}
+        <article class="message {{ 'unread' if m.unread }}">
+          <div class="message-avatar">{{ m.from[:1] }}</div>
+          <div class="message-body">
+            <div class="message-top"><strong>{{ m.from }}</strong><span class="muted small">{{ m.time }}</span></div>
+            <span class="muted small">{{ m.role }}</span>
+            <p>{{ m.text }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="tab-panel" data-panel="grades" hidden>
+    <div class="card list-card">
+      {% for g in grades %}
+        <article class="grade-row">
+          <div><strong>{{ g.subject }}</strong><span class="muted small">{{ g.note }}</span></div>
+          <span class="grade grade-{{ g.grade }}">{{ g.grade }}</span>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="tab-panel" data-panel="news" hidden>
+    {% for n in news %}
+      <article class="card news-card">
+        <span class="muted small">{{ n.date }}</span>
+        <strong>{{ n.title }}</strong>
+        <p class="muted">{{ n.text }}</p>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">Московский технологический институт</span>
+    <h1>Личный кабинет студента МТИ.</h1>
+    <p>Зарегистрируйтесь, заполните анкету студента и загрузите фотографию. Все данные сохраняются и будут доступны при следующем входе.</p>
+    <div class="hero-actions">
+        <a class="button primary" href="{{ url_for('register') }}">Создать аккаунт</a>
+        <a class="button secondary" href="{{ url_for('login') }}">Уже есть аккаунт</a>
+    </div>
+  </div>
+  <div class="preview-card">
+    <div class="preview-avatar">МТИ</div>
+    <div>
+      <div class="preview-label">Студент МТИ</div>
+      <div class="preview-name">Имя Фамилия</div>
+      <div class="preview-meta">Москва · личный кабинет</div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <article class="feature-card"><strong>Регистрация</strong><span>Вход по email и паролю — пароль хранится в зашифрованном виде.</span></article>
+  <article class="feature-card"><strong>Анкета студента</strong><span>Имя, город, телефон, дата рождения и информация о себе.</span></article>
+  <article class="feature-card"><strong>Фотография</strong><span>Загрузка JPG, PNG или WebP до 5 МБ.</span></article>
+</section>
+{% endif %}
+{% endblock %}
